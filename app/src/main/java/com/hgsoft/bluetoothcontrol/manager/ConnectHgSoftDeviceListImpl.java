@@ -37,9 +37,9 @@ public class ConnectHgSoftDeviceListImpl implements ConnectDeviceListImpl {
     @Override
     public void getDeviceList(Context context, final DeviceListImpl deviceList) {
         SearchRequest request = new SearchRequest.Builder()
-                .searchBluetoothLeDevice(3000, 3)   // 先扫BLE设备3次，每次3s
-                .searchBluetoothClassicDevice(3000) // 再扫经典蓝牙3s
-                .searchBluetoothLeDevice(2000)      // 再扫BLE设备2s
+                .searchBluetoothLeDevice(3000, 1)   // 先扫BLE设备3次，每次3s // TODO: 2017/12/13  扫描更改为1次
+                .searchBluetoothClassicDevice(1000) // 再扫经典蓝牙3s
+                .searchBluetoothLeDevice(1000)      // 再扫BLE设备2s
                 .build();
 
         final ArrayList<BlueToothDevice> devices = new ArrayList<>();
