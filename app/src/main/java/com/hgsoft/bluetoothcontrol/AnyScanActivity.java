@@ -1,6 +1,8 @@
 package com.hgsoft.bluetoothcontrol;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -30,17 +32,28 @@ public class AnyScanActivity extends BaseActivity implements View.OnClickListene
 
     private long startTime;
 
+    private String btMac;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_any_scan);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras!=null){
+            btMac = extras.getString("mac");
+            Log.e(TAG,"mac:"+btMac);
+        }
+
+
         initView();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ConnectHgSoftFactoryImpl.getInstance(this).closeConnection();
     }
 
     @Override
@@ -62,17 +75,20 @@ public class AnyScanActivity extends BaseActivity implements View.OnClickListene
                 isConnect = false;
                 break;
             case R.id.btn_start:
+                if(btMac==null){
+                    return;
+                }
                 showCircleDialog("正在连接...",true);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
 
                         String mac3 = "54:4A:16:56:4A:D3";//5922设备
-//                        String mac = "02:11:23:34:56:D8";
-                        String mac1 = "00:17:EA:8E:22:FD";// 5917设备
+                        String mac = "02:11:23:34:56:D8";
+//                        String mac1 = "00:17:EA:8E:22:FD";// 5917设备
 //                        String mac2 = "A1:CC:6C:56:68:59";// 伟杰设备
 
-                        ConnectHgSoftFactoryImpl.getInstance(AnyScanActivity.this).connection(AnyScanActivity.this, mac1, new ConnectReturnImpl() {
+                        ConnectHgSoftFactoryImpl.getInstance(AnyScanActivity.this).connection(AnyScanActivity.this, btMac, new ConnectReturnImpl() {
                             @Override
                             public void connectResult(final boolean b, final String s) {
 
@@ -209,6 +225,12 @@ public class AnyScanActivity extends BaseActivity implements View.OnClickListene
 
 
 
+    public static void startActivity(Context context,Bundle bundle){
+        Intent intent = new Intent();
+        intent.setClass(context,AnyScanActivity.class);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
 
 
 
