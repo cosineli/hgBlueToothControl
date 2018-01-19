@@ -6,6 +6,8 @@ import com.hgsoft.bluetoothcontrol.util.TransformUtils;
 
 import org.junit.Test;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +17,32 @@ import java.util.List;
  */
 
 public class TransformTest {
-//144
+
+    /**
+     * 将数据拆分成二维数组
+     * @param value
+     */
+    public void writeValue(byte[] value){
+        byte[][] valueCarbonTemp = new byte[value.length / 20 + 1][20];
+        for (int i = 0; i < valueCarbonTemp.length; i++) {
+            for (int j = 0; j < 20; j++) {
+                if ((20 * i + j) >= value.length) {
+                    break;
+                }
+                valueCarbonTemp[i][j] = value[i * 20 + j];
+            }
+        }
+        for (int i = 0; i < valueCarbonTemp.length; i++) {
+//            mApp.cubicBLEDevice.writeValue(SERVICEUUID_WRITE, CHARACTIC_WRITE, valueCarbonTemp[i]);
+        }
+    }
+
+
+
 
     @Test
     public void hexStringToAlgorism() {
-        String hex = "80";
+        String hex = "000021A2";
         hex = hex.toUpperCase();
         int max = hex.length();
         int result = 0;
@@ -34,7 +57,10 @@ public class TransformTest {
             result += Math.pow(16, max - i) * algorism;
         }
 
-        System.out.print(result);
+        BigDecimal decimal = new BigDecimal(result);
+        decimal = decimal.divide(new BigDecimal(100),2, RoundingMode.HALF_UP);
+
+        System.out.print(decimal);
     }
 
     @Test
@@ -42,8 +68,10 @@ public class TransformTest {
         //FE 01 006F 2712 0005 0A 00 12 61 33 06 81 5CB300005E
         //FE010027271200030A00121933058014B20011C034343032313636313130303035393137FB1800
         String str = "FE010027271200030A00121933058014B20011C034343032313636313130303035393137FB1800";
+        String ss = "000021A29000";
         System.out.println("===");
-        System.out.println(str.substring(52,56));
+//        System.out.println(str.substring(52,56));
+        System.out.println(ss.substring(0,ss.length()-4));
     }
 
     @Test

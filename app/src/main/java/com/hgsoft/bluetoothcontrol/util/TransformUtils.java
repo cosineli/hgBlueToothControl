@@ -1,6 +1,8 @@
 package com.hgsoft.bluetoothcontrol.util;
 
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -407,6 +409,34 @@ public class TransformUtils {
             result += Math.pow(16, max - i) * algorism;
         }
         return result;
+    }
+  /**
+     * 十六进制字符串转十进制,保留两位小数
+     *
+     * @param hex
+     *            十六进制字符串
+     * @return 十进制数值
+     */
+    public static BigDecimal hexStringToDecimal(String hex) {
+
+        hex = hex.toUpperCase();
+        int max = hex.length();
+        int result = 0;
+        for (int i = max; i > 0; i--) {
+            char c = hex.charAt(i - 1);
+            int algorism = 0;
+            if (c >= '0' && c <= '9') {
+                algorism = c - '0';
+            } else {
+                algorism = c - 55;
+            }
+            result += Math.pow(16, max - i) * algorism;
+        }
+
+        BigDecimal decimal = new BigDecimal(result);
+        decimal = decimal.divide(new BigDecimal(100),2, RoundingMode.HALF_UP);
+
+        return decimal;
     }
 
 

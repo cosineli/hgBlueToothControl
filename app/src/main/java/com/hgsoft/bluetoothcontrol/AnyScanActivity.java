@@ -19,6 +19,7 @@ import com.hgsoft.bluetoothcontrol.manager.ConnectHgSoftFactoryImpl;
 import com.hgsoft.bluetoothcontrol.util.TransformUtils;
 import com.lnt.connectfactorylibrary.ConnectReturnImpl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -122,33 +123,60 @@ public class AnyScanActivity extends BaseActivity implements View.OnClickListene
                     showToast("请先连接！");
                     return;
                 }
+
+                showCircleDialog("正在读取...",true);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        String command = etCommand.getText().toString();
-                        if(TextUtils.isEmpty(command)){
-                            return;
+//                        粤通卡
+//                        00 A4 00 00 02 10 01
+//                        80 5C 00 02 04
+//                        岭南通
+//                        00 A4 00 00 02 DD F1
+//                        00 A4 00 00 02 AD F3
+//                        80 5C 00 02 04
+
+
+                        BigDecimal money = new BigDecimal(-1);
+
+                        String str = sendCommand("00A40000021001");
+                        //是否为粤通卡
+                        if(str.endsWith("9000")){
+                            //读余额
+                            String moneyStr = sendCommand("805C000204");
+                            if(moneyStr.endsWith("9000")){
+                                money = TransformUtils.hexStringToDecimal(moneyStr.substring(0,moneyStr.length()-4));
+                                Log.e(TAG,"读取的粤通卡余额："+money);
+                            }
+
+                        }else {
+                            //发送判断是否为岭南通卡的命令
+                            String s = sendCommand("00A4000002DDF1");
+                            if(s.endsWith("9000")){
+                                String s1 = sendCommand("00A4000002ADF3");
+                                if(s1.endsWith("9000")){
+                                    //读取余额
+                                    String moneystr = sendCommand("805C000204");
+                                    if(moneystr.endsWith("9000")){
+                                        money = TransformUtils.hexStringToDecimal(moneystr.substring(0,moneystr.length()-4));
+                                        Log.e(TAG,"读取的岭南通余额："+money);
+                                    }
+                                }
+
+                            }
                         }
-                        startTime = System.currentTimeMillis();
-//                        Log.e(TAG,"开始时间："+startTime);
-                        byte[] data = TransformUtils.hexStringToBytes(command);
-                        byte[] transmit = ConnectHgSoftFactoryImpl.getInstance(AnyScanActivity.this).transmit(data);
-                        final long time = System.currentTimeMillis() - startTime;
-                        final String str = TransformUtils.byte2hex(transmit);
-//                        Log.e(TAG,"返回的B3："+str);
 
-
+                        final BigDecimal realMoney = money;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if(str.length()==0){
-                                    tvResponse.setText("返回的长度为0");
+                                BigDecimal test = new BigDecimal(-1);
+                                if(test.compareTo(realMoney)==0){
+                                    tvResponse.setText("读取余额出错!");
                                 }else {
-
-//                                    Log.e(TAG,"结束时间："+System.currentTimeMillis());
-
-                                    tvResponse.setText(str +"耗时ms:"+time);
+                                    tvResponse.setText("余额："+realMoney+"元");
                                 }
+                                dismissCircleDialog();
                             }
                         });
 
@@ -191,6 +219,17 @@ public class AnyScanActivity extends BaseActivity implements View.OnClickListene
 
 
         }
+    }
+
+    /**
+     * 读取余额，适用于子线程
+     * @param command
+     * @return
+     */
+    private String sendCommand(String command){
+        byte[] data = TransformUtils.hexStringToBytes(command);
+        byte[] transmit = ConnectHgSoftFactoryImpl.getInstance(AnyScanActivity.this).transmit(data);
+        return TransformUtils.byte2hex(transmit);
     }
 
     private void initView() {

@@ -50,6 +50,8 @@ public class ConnectHgSoftFactoryImpl implements ConnectFactoryImpl {
 
 
     private byte[] B3Data;
+    //是否是上电命令，假如是，则不需要抛异常
+    private boolean isPowerOnCommand = false;
 
     public static ConnectHgSoftFactoryImpl getInstance(Context context){
         if(instance == null){
@@ -155,6 +157,14 @@ public class ConnectHgSoftFactoryImpl implements ConnectFactoryImpl {
             e.printStackTrace();
         }
 
+        if (!isPowerOnCommand) {
+            // TODO: 2018/1/12 写指令的时候，判断卡是否在
+            String result = TransformUtils.byte2hex(B3Data);
+            if ("FFFF".equals(result)) {
+                throw new RuntimeException("无卡");
+            }
+        }
+
         return B3Data;
     }
 
@@ -179,11 +189,11 @@ public class ConnectHgSoftFactoryImpl implements ConnectFactoryImpl {
     public Object powerOn() {
 //        00 A4 00 00 02 DD F1 判断上电指令
         byte[] b = {0x00, (byte) 0xA4,0x00,0x00,0x02, (byte) 0xDD, (byte) 0xF1};
-        byte[] transmit = transmit(b);
-//        Log.e(TAG,"powerOn返回："+TransformUtils.byte2hex(transmit));
         //返回FFFF表示超时 return false，其他返回true
-        String result = TransformUtils.byte2hex(transmit);
-
+        // TODO: 2018/1/12 powerOn不需要抛异常
+        isPowerOnCommand = true;
+        String result = TransformUtils.byte2hex(transmit(b));
+        isPowerOnCommand = false;
         return !"FFFF".equals(result);
     }
 
