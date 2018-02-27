@@ -199,6 +199,8 @@ public class AnyScanActivity extends BaseActivity implements View.OnClickListene
                            public void run() {
                                if(o){
                                    tvResult.setText("上电成功！");
+                               }else {
+                                   tvResult.setText("上电失败！");
                                }
                            }
                        });

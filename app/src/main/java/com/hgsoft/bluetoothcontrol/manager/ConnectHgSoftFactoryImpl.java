@@ -189,12 +189,16 @@ public class ConnectHgSoftFactoryImpl implements ConnectFactoryImpl {
     public Object powerOn() {
 //        00 A4 00 00 02 DD F1 判断上电指令
         byte[] b = {0x00, (byte) 0xA4,0x00,0x00,0x02, (byte) 0xDD, (byte) 0xF1};
-        //返回FFFF表示超时 return false，其他返回true
+        //CF000000 return false，其他返回true
         // TODO: 2018/1/12 powerOn不需要抛异常
         isPowerOnCommand = true;
         String result = TransformUtils.byte2hex(transmit(b));
         isPowerOnCommand = false;
-        return !"FFFF".equals(result);
+ //
+        //FE010018271200030A00120A33068005B3CF000000FF1800  无卡返回
+        //FE01002A271200040A00121C33068017B3000012008110010E6F0A84085041592E415050599000A91800 有卡返回
+
+        return !result.startsWith("CF000000");
     }
 
     @Override
@@ -288,6 +292,7 @@ public class ConnectHgSoftFactoryImpl implements ConnectFactoryImpl {
                         if (code == REQUEST_SUCCESS) {
                             // 下发判断是否为华工设备的指令
 //                            handleServerData(HANDLE_MESSAGE_IS_HGSOFT,null,DataPack.getCheckHGPack());
+                            Log.e("connectResult","=====返回连接成功！======");
                             mConnectReturn.connectResult(true,mBTMac);
                         }
                     }
@@ -325,12 +330,18 @@ public class ConnectHgSoftFactoryImpl implements ConnectFactoryImpl {
                 break;
 
             case HANDLE_MESSAGE_RESPONSE_WRITE_DATA://设备对下发数据的响应
-                //完整的数据包
-                byte[] result = TransformUtils.getB3Data(data);
-                if(result==null){
-                    result = new byte[0];
+
+                if(isPowerOnCommand){
+                    B3Data = TransformUtils.powerOnResult(data);
+                }else {
+                    //完整的数据包
+                    byte[] result = TransformUtils.getB3Data(data);
+                    if(result==null){
+                        result = new byte[0];
+                    }
+                    B3Data = result;
                 }
-                B3Data = result;
+
 
                 break;
 

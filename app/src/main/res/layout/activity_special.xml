@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_sp"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:titleTextColor="@android:color/white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/btn_start_sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开始连接" />
+        <Button
+            android:id="@+id/btn_end_sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="断开连接" />
+
+        <TextView
+            android:id="@+id/tv_result_sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="18dp"
+            android:text="请先连接！" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btn_send_sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="读取余额" />
+
+        <Button
+            android:id="@+id/btn_power_on_sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="上电" />
+        <Button
+            android:id="@+id/btn_power_off_sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="下电" />
+
+    </LinearLayout>
+
+
+
+
+    <EditText
+        android:id="@+id/et_command_sp"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:minLines="3"
+        android:padding="10dp"
+        android:gravity="top"
+        android:text="00A4000002DDF1"
+        android:textSize="18dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textSize="18dp"
+        android:paddingLeft="10dp"
+        android:text="返回："
+        />
+
+    <TextView
+        android:id="@+id/tv_response_sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:maxLines="10"
+        android:scrollbars="vertical"
+        android:text=""
+        android:textSize="18dp" />
+
+</LinearLayout>

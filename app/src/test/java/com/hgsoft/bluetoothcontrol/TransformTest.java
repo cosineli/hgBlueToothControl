@@ -67,11 +67,22 @@ public class TransformTest {
     public void test11(){
         //FE 01 006F 2712 0005 0A 00 12 61 33 06 81 5CB300005E
         //FE010027271200030A00121933058014B20011C034343032313636313130303035393137FB1800
-        String str = "FE010027271200030A00121933058014B20011C034343032313636313130303035393137FB1800";
-        String ss = "000021A29000";
-        System.out.println("===");
+//        String str = "FE010027271200030A00121933058014B20011C034343032313636313130303035393137FB1800";
+//        String ss = "000021A29000";
+//        System.out.println("===");
 //        System.out.println(str.substring(52,56));
-        System.out.println(ss.substring(0,ss.length()-4));
+//        System.out.println(ss.substring(0,ss.length()-4));
+
+//        BigDecimal decimal = TransformUtils.hexStringToDecimal("1B95");
+        String str2 = "3306800FB300000A008108010600001B959000";
+
+        System.out.print(str2.substring(str2.length()-8,str2.length()-4));
+
+        //FE010018271200030A00120A33068005B3CF000000FF1800  无卡返回
+        //FE01002A271200040A00121C33068017B3000012008110010E6F0A84085041592E415050599000A91800 有卡返回
+        String ss = "FE010018271200030A00120A33068005B3CF000000FF1800";
+        String ss1 = "FE01002A271200040A00121C33068017B3000012008110010E6F0A84085041592E415050599000A91800";
+        System.out.print("====:"+ss.substring(34));
     }
 
     @Test

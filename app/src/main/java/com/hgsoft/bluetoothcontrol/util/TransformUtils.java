@@ -225,7 +225,16 @@ public class TransformUtils {
         String str = serverData.substring(50,serverData.length()-6);
         return hexStringToBytes(str);
     }
-
+    //0
+    //FE010018271200030A00120A33068005B3CF000000FF1800  无卡返回
+    //FE01002A271200040A00121C33068017B3000012008110010E6F0A84085041592E415050599000A91800 有卡返回
+    public static byte[] powerOnResult(String serverData){
+        if(serverData.length()<38){
+            return new byte[0];
+        }
+        String str = serverData.substring(34);
+        return hexStringToBytes(str);
+    }
 
  /**
      * 判断是否为HG设备
